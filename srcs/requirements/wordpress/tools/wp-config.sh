@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+echo "⌛ Setting up wordpress..."
+
 REQUIRED_VARS=(
   DOMAIN_NAME
   DB_NAME
@@ -63,20 +65,23 @@ CURRENT_CONFIG=$(jq -n \
 
 
 # Attente de la disponibilité de la base de données avec wait-for-it
-/wait-for-it.sh "$DB_HOST:$DB_PORT" -t 30 -- echo "✅ Database retrieved !"
+/usr/local/bin/wait-for-it.sh  "$DB_HOST:$DB_PORT" -t 30 -- echo "✅ Database retrieved !"
 
 
 # Si pas de config précédente, installation complète
-if [ ! -f "$CONFIG_FILE" ]; then
+if [ ! -f "$CONFIG_FILE" ] || [ ! -f ./wp-config.php ]; then
   echo "$CURRENT_CONFIG" > "$CONFIG_FILE"
   /usr/local/bin/init-db.sh
   exit 0
 fi
 
-
-
 # Comparaison config précédente
 OLD_CONFIG=$(cat "$CONFIG_FILE")
+
+# echo "$CURRENT_CONFIG" | jq -r .DB_NAME
+# echo "$OLD_CONFIG" | jq -r .DB_NAME
+# echo "$CURRENT_CONFIG" | jq -r .DB_PREFIX
+# echo "$OLD_CONFIG" | jq -r .DB_PREFIX
 
 RESET_NEEDED=false
 if [ "$(echo "$CURRENT_CONFIG" | jq -r .DB_NAME)" != "$(echo "$OLD_CONFIG" | jq -r .DB_NAME)" ]; then
@@ -87,12 +92,14 @@ if [ "$(echo "$CURRENT_CONFIG" | jq -r .DB_PREFIX)" != "$(echo "$OLD_CONFIG" | j
 fi
 
 if $RESET_NEEDED; then
-  echo "💣 Wordpress: DB_NAME or DB_PREFIX change detected: database reset"
-  wp db reset --yes --allow-root
+  echo "🔁 Wordpress: DB_NAME or DB_PREFIX change detected: database reset"
+  wp db reset --yes --allow-root || { echo "❌ Wordpress: fail db reset"; exit 1; }
   /usr/local/bin/init-db.sh
   exit 0
 fi
 
+# echo $CURRENT_CONFIG
+# echo $OLD_CONFIG
 CURRENT_CONFIG="$CURRENT_CONFIG" OLD_CONFIG="$OLD_CONFIG" /usr/local/bin/update-db.sh
 
 echo "$CURRENT_CONFIG" > "$CONFIG_FILE"

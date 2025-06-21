@@ -15,4 +15,17 @@ for var in "${REQUIRED_VARS[@]}"; do
   fi
 done
 
+
+# faire ecouter mariabd sur toutes les adresses au lieu jsute de localhsot sinon wordpress pas content
+if grep -q "^\[mysqld\]" /etc/mysql/my.cnf; then
+  sed -i "/^\[mysqld\]/a bind-address = 0.0.0.0" /etc/mysql/my.cnf
+else
+  echo -e "[mysqld]\nbind-address = 0.0.0.0" >> /etc/mysql/my.cnf
+fi
+# echo "BIND ADDRESS MARIADB"
+# cat /etc/mysql/my.cnf | grep "bind-address =" | cat
+
 /usr/local/bin/init-db.sh
+
+echo "🚀 Starting MariaDB..."
+exec mysqld

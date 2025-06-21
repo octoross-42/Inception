@@ -44,7 +44,7 @@ services:
     env_file:
       .env
     expose:
-      - "$DB_PORT"
+      - 3306
     volumes:
       - mariadb:/var/lib/mysql
     networks:

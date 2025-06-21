@@ -8,5 +8,5 @@ set -e
 
 sed "s|%%DOMAIN_NAME%%|$DOMAIN_NAME|g" /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
-echo "✅  Lancement de nginx..."
+echo "🚀 Starting nginx..."
 exec nginx -g 'daemon off;'

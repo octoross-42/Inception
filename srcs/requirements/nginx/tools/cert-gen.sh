@@ -19,7 +19,7 @@ if [ ! -f "$CRT" ] || [ ! -f "$KEY" ]; then
     -newkey rsa:2048 \
     -keyout "$KEY" \
     -out "$CRT" \
-    -subj "/C=FR/ST=Île-de-France/L=Paris/O=42/Inception/CN=${DOMAIN_NAME}"
+    -subj "/C=FR/ST=Île-de-France/L=Paris/O=42/Inception/CN=${DOMAIN_NAME}" || { echo "❌ Nginx: cant create secutity keys (openssl)"; exit 1; }
   echo "✅ Nginx: Self-signed certificate generated for ${DOMAIN_NAME}"
 fi
 

@@ -13,7 +13,7 @@ RUN apt update -y && \
     apt install --no-install-recommends -y nginx \
 		openssl \
     	apt-utils \
-    	gettext \
+    	gettext && \
 	chmod +x /usr/local/bin/cert-gen.sh /usr/local/bin/nginx-start.sh && \
 	# cleaning
 	apt clean && \
