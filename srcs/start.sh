@@ -1,12 +1,12 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -e
 
-if [ -f .env ]; then
-  . .env
+if [ -f ./srcs/.env ]; then
+  . ./srcs/.env
 fi
 
 if [ -z "$DOMAIN_NAME" ]; then
-  echo "❌ Pls define DOMAIN_NAME in env file" >&2
+  echo "❌ Start: Pls define DOMAIN_NAME in env file" >&2
   exit 1
 fi
 
@@ -19,10 +19,10 @@ if ! grep -qE "^[[:space:]]*127\.0\.0\.1[[:space:]]+$DOMAIN_NAME" /etc/hosts; th
   printf "127.0.0.1\t%s\n::1\t%s\n" "$DOMAIN_NAME" "$DOMAIN_NAME" \
     | sudo tee -a /etc/hosts >/dev/null
 else
-  echo "ℹ️ $DOMAIN_NAME found in /etc/hosts"
+  echo "ℹ️  $DOMAIN_NAME found in /etc/hosts"
 fi
 
 
-docker-compose up -d --build
+docker-compose -f "./srcs/docker-compose.yaml" -p "inception" up -d --remove-orphans
 # --build -> reconstruire images dockers
 # -d = --detach -> arriere plan
