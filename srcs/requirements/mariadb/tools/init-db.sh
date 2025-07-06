@@ -31,6 +31,13 @@ while [ ! -S /run/mysqld/mysqld.sock ]; do
 done
 echo "✅ MariaDB is ready"
 
+
+echo "⌛ Mariadb: waiting for MariaDB to accept connections..."
+until mysqladmin ping --socket=/run/mysqld/mysqld.sock --silent; do
+	sleep 0.2
+done
+echo "✅ MariaDB is ready to accept connections"
+
 echo "⌛ Mariadb: Configuring database..."
 
 
