@@ -26,7 +26,7 @@ for var in "${REQUIRED_VARS[@]}"; do
   fi
 done
 
-CONFIG_FILE=".env.json"
+CONFIG_FILE="/app/state/.env.json"
 
 # Créer config actuelle en JSON
 CURRENT_CONFIG=$(jq -n \
