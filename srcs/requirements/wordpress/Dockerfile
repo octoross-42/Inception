@@ -41,8 +41,7 @@ RUN apt update -y && \
 
 # Installation fichiers du site (index.html, index.php, etc) grace a wordpress merci wordpress
 WORKDIR /var/www/html
-RUN wp core download --allow-root --locale=fr_FR && \
-	chown -R www-data:www-data .
+RUN chown -R www-data:www-data .
     
 
 

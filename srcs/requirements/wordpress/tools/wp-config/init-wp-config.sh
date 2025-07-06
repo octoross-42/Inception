@@ -2,6 +2,8 @@
 set -e
 rm -f ./wp-config.php
 
+wp core download --allow-root --locale=fr_FR || { echo "❌ Wordpress: fail dl wp"; exit 1; }
+
 echo "⌛ Wordpress: wp config create..."
 wp config create \
     --dbname="$DB_NAME" \

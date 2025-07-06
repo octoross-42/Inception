@@ -2,7 +2,7 @@
 set -e
 
 
-CONFIG_FILE="/app/state/.env.json"
+CONFIG_FILE="/app/state/.mariadb.env.json"
 # Créer config actuelle en JSON
 CURRENT_CONFIG=$(jq -n \
   --arg DB_ROOT_PASS "$DB_ROOT_PASS" \
