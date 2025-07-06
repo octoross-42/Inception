@@ -88,3 +88,6 @@ db:
 	@docker exec -it mariadb_inception sh -c 'mysql -u "$$DB_USER" -p"$$DB_PASS"'
 
 # https://DOMAIN_NAME/wp-login.php
+
+# @sudo usermod -aG docker $$(whoami)
+# newgrp docker
