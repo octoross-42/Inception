@@ -6,13 +6,15 @@ ENV DEBIAN_FRONTEND=noninteractive
 # a titre indicatif -> pour la doc et les outils docker dinfos 
 EXPOSE 9000
 
-COPY tools/wp-config.sh	/usr/local/bin/wp-config.sh
-COPY tools/init-db.sh	/usr/local/bin/init-db.sh
-COPY tools/update-db.sh	/usr/local/bin/update-db.sh
-COPY tools/wordpress-start.sh /usr/local/bin/wordpress-start.sh
+COPY tools/wp-config/wp-config.sh			/usr/local/bin/wp-config.sh
+COPY tools/wp-config/init-wp-config.sh		/usr/local/bin/init-wp-config.sh
+COPY tools/wp-config/update-wp-config.sh	/usr/local/bin/update-wp-config.sh
+COPY tools/wordpress-start.sh 				/usr/local/bin/wordpress-start.sh
 
 RUN apt update -y && \
     apt upgrade -y && \
+	apt-get update && \
+    apt-get install -y default-mysql-client && \
     apt install -y php \
 		php-cli \
 		php-fpm \
@@ -33,10 +35,9 @@ RUN apt update -y && \
     -o /usr/local/bin/wait-for-it.sh && \
     chmod +x /usr/local/bin/wait-for-it.sh && \
 	# droits pour execution de mes scripts
-	chmod +x /usr/local/bin/wp-config.sh /usr/local/bin/wordpress-start.sh /usr/local/bin/init-db.sh /usr/local/bin/update-db.sh && \
-	apt clean && rm -rf /var/lib/apt/lists/*
+	chmod +x /usr/local/bin/wp-config.sh /usr/local/bin/wordpress-start.sh /usr/local/bin/init-wp-config.sh /usr/local/bin/update-wp-config.sh && \
+	apt clean && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-    
 
 # Installation fichiers du site (index.html, index.php, etc) grace a wordpress merci wordpress
 WORKDIR /var/www/html

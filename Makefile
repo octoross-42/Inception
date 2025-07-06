@@ -5,48 +5,51 @@ DOCKER_COMPOSE_FILE="./srcs/docker-compose.yaml"
 
 all : up
 
-up :
-	@"./srcs/tools/start.sh" && printf "\n"
-	docker-compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) up -d --remove-orphans
-	$(MAKE) status
+start-docker:
+	@sudo service docker start
 
-down :
+up : start-docker
+	@"./srcs/tools/start.sh" && printf "\n"
+	@docker-compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) up -d --remove-orphans
+	@$(MAKE) status
+
+down : start-docker
 # 	stop + rm
 	@docker-compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) down 
 
-down-volume:
+down-volume: start-docker
 	@docker-compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) down -v
 
-stop :
+stop : start-docker
 	@docker-compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) stop 
 
-start :
+start : start-docker
 	@docker-compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) start 
 
-clean :
+clean : start-docker
 	@docker-compose -f $(DOCKER_COMPOSE_FILE) -p $(PROJECT_NAME) rm 
 
-status :
+status : start-docker
 	@docker ps
 
-logs :
+logs : start-docker
 	@docker-compose -p $(PROJECT_NAME) -f $(DOCKER_COMPOSE_FILE) logs 
 
 rev : down-volume
 	@docker-compose -p $(PROJECT_NAME) -f $(DOCKER_COMPOSE_FILE) build
-	$(MAKE) up
+	@$(MAKE) up
 
 re : down
 	@docker-compose -p $(PROJECT_NAME) -f $(DOCKER_COMPOSE_FILE) build
-	$(MAKE) up
+	@$(MAKE) up
 
 rec: down
 	@docker-compose -p $(PROJECT_NAME) -f $(DOCKER_COMPOSE_FILE) build --no-cache
-	$(MAKE) up
+	@$(MAKE) up
 
 recv: down-volume
 	@docker-compose -p $(PROJECT_NAME) -f $(DOCKER_COMPOSE_FILE) build --no-cache
-	$(MAKE) up
+	@$(MAKE) up
 
 
 mariadb: down
@@ -66,3 +69,11 @@ nginx: down
 
 nginx-volume: down-volume
 	@docker-compose -p $(PROJECT_NAME) -f $(DOCKER_COMPOSE_FILE) build nginx
+
+db-root:
+	@docker exec -it mariadb_inception sh -c 'mysql -u root -p"$$DB_ROOT_PASS"'
+
+db:
+	@docker exec -it mariadb_inception sh -c 'mysql -u "$$DB_USER" -p"$$DB_PASS"'
+
+# https://DOMAIN_NAME/wp-login.php

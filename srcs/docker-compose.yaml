@@ -9,10 +9,9 @@ services:
       - .env
     ports:
       - "443:443"
-      - "80:80"
+      # - "80:80"
     # na pas besoin dexpose, il est serveur pas client, il envoie sur un port (9000 pour wordpress) et na rien a ecouter 
     volumes:
-      - certificates:/etc/ssl/certs:rw
       - wordpress-website:/var/www/html:ro
     depends_on:
       - wordpress
@@ -30,12 +29,25 @@ services:
       - "9000"
     volumes:
       - wordpress-website:/var/www/html
+      - state:/app/state/
     depends_on:
       - mariadb
     networks:
       - frontend
       - backend
     restart: always
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - WEBSITE_TITLE=${WEBSITE_TITLE}
+      - WP_ADMIN_NAME=${WP_ADMIN_NAME}
+      - WP_ADMIN_PASS=${WP_ADMIN_PASS}
+      - WP_ADMIN_MAIL=${WP_ADMIN_MAIL}
+      - WP_USER_NAME=${WP_USER_NAME}
+      - WP_USER_PASS=${WP_USER_PASS}
+      - WP_USER_MAIL=${WP_USER_MAIL}
 
   mariadb:
     image: octoross/inception-mariadb
@@ -46,16 +58,17 @@ services:
     expose:
       - 3306
     volumes:
-      - mariadb:/var/lib/mysql
+      - database:/var/lib/mysql
+      - state:/app/state/
     networks:
       - backend
     restart: always
 
 
 volumes:
-  certificates:
   wordpress-website:
-  mariadb:
+  database:
+  state:
 
 networks:
   frontend:

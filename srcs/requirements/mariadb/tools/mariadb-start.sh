@@ -5,6 +5,7 @@ REQUIRED_VARS=(
   DB_NAME
   DB_USER
   DB_PASS
+  DB_ROOT_PASS
 )
 
 # Vérifie que chaque variable est définie

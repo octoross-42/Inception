@@ -10,4 +10,4 @@ if [ -z "$DOMAIN_NAME" ]; then
   exit 1
 fi
 
-./tools/redirect-localhost.sh
+DOMAIN_NAME="$DOMAIN_NAME" ./srcs/tools/redirect-localhost.sh

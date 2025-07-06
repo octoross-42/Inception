@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+set -e
 rm -f ./wp-config.php
 
 echo "⌛ Wordpress: wp config create..."
@@ -5,8 +7,8 @@ wp config create \
     --dbname="$DB_NAME" \
     --dbuser="$DB_USER" \
     --dbpass="$DB_PASS" \
-    --dbhost="$DB_HOST" \
-    --dbprefix="$DB_PREFIX" \
+    --dbhost=mariadb \
+    --dbprefix="_" \
     --locale=fr_FR \
     --allow-root || { echo "❌ Wordpress: fail config create"; exit 1; }
 
@@ -18,7 +20,7 @@ wp config set FORCE_SSL_ADMIN true --raw --allow-root || { echo "❌ Wordpress: 
 
 echo "⌛ Worpress: wp core install..."
 wp core install \
-    --url="$DOMAIN_NAME" \
+    --url="https://$DOMAIN_NAME" \
     --title="$WEBSITE_TITLE" \
     --admin_user="$WP_ADMIN_NAME" \
     --admin_password="$WP_ADMIN_PASS" \
