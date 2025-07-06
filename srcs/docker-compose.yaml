@@ -12,7 +12,7 @@ services:
       # - "80:80"
     # na pas besoin dexpose, il est serveur pas client, il envoie sur un port (9000 pour wordpress) et na rien a ecouter 
     volumes:
-      - wordpress-website:/var/www/html:ro
+      - /home/octoross/data/wordpress-website:/var/www/html:ro
     depends_on:
       - wordpress
     networks:
@@ -28,8 +28,8 @@ services:
     expose:
       - "9000"
     volumes:
-      - wordpress-website:/var/www/html
-      - state:/app/state/
+      - /home/octoross/data/wordpress-website:/var/www/html
+      - /home/octoross/data/state:/app/state/
     depends_on:
       - mariadb
     networks:
@@ -58,17 +58,11 @@ services:
     expose:
       - 3306
     volumes:
-      - database:/var/lib/mysql
-      - state:/app/state/
+      - /home/octoross/data/database:/var/lib/mysql
+      - /home/octoross/data/state:/app/state/
     networks:
       - backend
     restart: always
-
-
-volumes:
-  wordpress-website:
-  database:
-  state:
 
 networks:
   frontend:

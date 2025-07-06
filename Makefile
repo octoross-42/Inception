@@ -7,6 +7,10 @@ all : up
 
 start-docker:
 	@sudo service docker start
+	@mkdir -p /home/octoross/data/database
+	@mkdir -p /home/octoross/data/state
+	@mkdir -p /home/octoross/data/wordpress-website
+
 
 up : start-docker
 	@"./srcs/tools/start.sh" && printf "\n"
